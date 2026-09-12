@@ -6,7 +6,7 @@
 
 **One repository, one Cargo workspace, separate crates per device.**
 
-Create a single repo `ibm-1130-peripherals-rs` containing a Rust workspace
+Create a single repo `sw-ibm-1130-peripherals` containing a Rust workspace
 with one crate (or app) per emulated peripheral:
 
 - `ibm-029-keypunch`
@@ -30,14 +30,14 @@ The first two devices consume and produce the **same physical artifact**: the
 - The authentic 108-byte IBM 1130 object-deck binary format
 
 That shared model already exists and is well-tested as
-`punch-card-core` at `ibm-1130-rs/crates/punch-card-core/`. Splitting these
+`punch-card-core` at `sw-ibm-1130-rs/crates/punch-card-core/`. Splitting these
 two into separate repos would immediately force `punch-card-core` to become a
 third cross-repo dependency, and a card-format change would require coordinated
 commits across repos.
 
 ### Precedent already exists in this collection
 
-- `ibm-1130-rs` is already a multi-crate workspace (components crate +
+- `sw-ibm-1130-rs` is already a multi-crate workspace (components crate +
   `crates/punch-card-core`).
 - The separate-repo family (`sw-ibm1130-*`, `sw-cdp1802-*`) splits on
   **independent** software layers (ISA / codegen / emulator) that share no
@@ -56,7 +56,7 @@ ever gains an independent release/deployment cadence.
 One repo deploys one coherent demo tree under the org Pages URL:
 
 ```
-https://sw-comp-history.github.io/ibm-1130-peripherals-rs/<device>/
+https://sw-comp-history.github.io/sw-ibm-1130-peripherals/<device>/
 ```
 
 vs. N disconnected per-device sites with no shared navigation.
@@ -64,7 +64,7 @@ vs. N disconnected per-device sites with no shared navigation.
 ## Repository Layout
 
 ```
-ibm-1130-peripherals-rs/
+sw-ibm-1130-peripherals/
 ├── Cargo.toml                     # workspace + resolver
 ├── README.md
 ├── LICENSE
@@ -82,7 +82,7 @@ ibm-1130-peripherals-rs/
     ├── ibm-029-keypunch/          # keypunch web demo -> pages/keypunch/
     │   ├── Cargo.toml             # bin crate (cdylib)
     │   ├── index.html
-    │   ├── Trunk.toml             # public_url = "/ibm-1130-peripherals-rs/keypunch/"
+    │   ├── Trunk.toml             # public_url = "/sw-ibm-1130-peripherals/keypunch/"
     │   ├── src/
     │   └── static/                # device CSS
     ├── ibm-1442-card-io/          # reader/punch demo -> pages/card-io/
@@ -108,7 +108,7 @@ resolver = "2"
 
 ## Naming Conventions
 
-- Repo: `ibm-1130-peripherals-rs` (matches `ibm-1130-rs` family style).
+- Repo: `sw-ibm-1130-peripherals`.
 - App crates use era-accurate model numbers where one exists:
   - `ibm-029-keypunch`
   - `ibm-1442-card-io`
@@ -116,6 +116,15 @@ resolver = "2"
   - light-pen terminal: use the real model number if identified
     (e.g. IBM 2250/2260 family), otherwise `light-pen-vector-terminal`.
 - Shared crates: `punch-card-core` (keep the existing name), `peripheral-components`.
+
+### Naming rule for the repo collection
+
+- New repos: `sw-<machine>-<subsystem>`, **no** `-rs` suffix
+  (e.g. `sw-ibm-1130-peripherals`).
+- Older repos keep their existing `-rs` suffix (`ibm-1130-rs`, `ibm-390-rs`,
+  etc.) to avoid churn.
+- The `-rs` in the older names is a legacy quirk, not a convention; do not
+  extend it to newer repos.
 
 ## Migration Plan (Phase 1: 029 + 1442)
 
